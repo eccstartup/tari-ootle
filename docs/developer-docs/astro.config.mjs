@@ -1,18 +1,20 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
+import vercel from "@astrojs/vercel";
 import starlight from "@astrojs/starlight";
 import skills from 'astro-skills';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
+// Vercel sets VERCEL=1 in its build environment; Cloudflare Workers is the default elsewhere.
+const isVercel = !!process.env.VERCEL;
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://ootle.tari.com",
   output: "server",
-  adapter: cloudflare({
-    imageService: "passthrough",
-  }),
+  adapter: isVercel ? vercel() : cloudflare({ imageService: "passthrough" }),
   base: '/',
   markdown: {
     remarkPlugins: [remarkMath],
